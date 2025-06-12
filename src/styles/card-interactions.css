@@ -1,0 +1,49 @@
+.card {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.card:active {
+  transform: scale(0.98) translateY(2px);
+  transition: transform 0.1s ease-out;
+}
+
+.card.is-pressed {
+  transform: scale(0.98) translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .card:active {
+    transform: scale(0.98) translateY(1px);
+  }
+}
+
+/* High DPI display optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .card:active {
+    transform: scale(0.98) translateY(1px);
+  }
+}
+
+/* Print styles */
+@media print {
+  .card {
+    cursor: default;
+  }
+  
+  .card:active,
+  .card.is-pressed {
+    transform: none;
+    box-shadow: none;
+  }
+} 
