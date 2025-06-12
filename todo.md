@@ -166,30 +166,30 @@
 
 ### ✅ Step 2.1: Static Card Component
 
-- [ ] Create `src/components/Card.js`
-  - [ ] Create Card component class that renders individual cards
-  - [ ] Add methods for setting card content (text, front/back states)
-  - [ ] Add proper DOM element creation and management
-  - [ ] Add card state management (front/back)
-- [ ] Implement card structure
-  - [ ] Add card container with proper dimensions (7cm x 9cm ratio)
-  - [ ] Add front face with white background
-  - [ ] Add back face with black background
-  - [ ] Use proper semantic HTML structure
-- [ ] Create `src/styles/card.css`
-  - [ ] Set card dimensions and aspect ratio (7:9)
-  - [ ] Add base positioning and display properties
-  - [ ] Add border and shadow styling for realism
-  - [ ] Add transition properties for future animations
-- [ ] Create responsive scaling logic
-  - [ ] Ensure cards maintain aspect ratio across screen sizes
-  - [ ] Set maximum and minimum size constraints
-  - [ ] Add proper scaling for mobile devices
-- [ ] Write tests
-  - [ ] Test card component instantiation
-  - [ ] Test content rendering
-  - [ ] Test responsive scaling behavior
-  - [ ] Test DOM structure validation
+- [x] Create `src/components/Card.js`
+  - [x] Create Card component class that renders individual cards
+  - [x] Add methods for setting card content (text, front/back states)
+  - [x] Add proper DOM element creation and management
+  - [x] Add card state management (front/back)
+- [x] Implement card structure
+  - [x] Add card container with proper dimensions (7cm x 9cm ratio)
+  - [x] Add front face with white background
+  - [x] Add back face with black background
+  - [x] Use proper semantic HTML structure
+- [x] Create `src/styles/card.css`
+  - [x] Set card dimensions and aspect ratio (7:9)
+  - [x] Add base positioning and display properties
+  - [x] Add border and shadow styling for realism
+  - [x] Add transition properties for future animations
+- [x] Create responsive scaling logic
+  - [x] Ensure cards maintain aspect ratio across screen sizes
+  - [x] Set maximum and minimum size constraints
+  - [x] Add proper scaling for mobile devices
+- [x] Write tests
+  - [x] Test card component instantiation
+  - [x] Test content rendering
+  - [x] Test responsive scaling behavior
+  - [x] Test DOM structure validation
 
 ### ✅ Step 2.2: Card Dimensions and Paper Texture
 
