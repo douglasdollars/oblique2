@@ -1,3 +1,5 @@
+import { EditCardsPage } from '../pages/EditCardsPage.js';
+
 export class Router {
   constructor(routes = {}) {
     this.routes = routes;

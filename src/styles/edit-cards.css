@@ -1,0 +1,55 @@
+.edit-cards-page {
+  background: var(--color-black, #000);
+  color: var(--color-gold, #ffd700);
+  min-height: 100vh;
+  padding: 0;
+  font-family: var(--font-sans, 'Inter', 'Segoe UI', Arial, sans-serif);
+}
+
+.edit-cards-header {
+  padding: 2rem 1rem 1rem 1rem;
+  background: var(--color-black, #000);
+  border-bottom: 1px solid var(--color-gold, #ffd700);
+  text-align: left;
+}
+
+.edit-cards-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--color-gold, #ffd700);
+  letter-spacing: 0.05em;
+}
+
+.edit-cards-main {
+  padding: 2rem 1rem;
+  background: var(--color-black, #000);
+  min-height: 60vh;
+  outline: none;
+}
+
+.edit-cards-content {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--color-dark-grey, #1a1a1a);
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  padding: 2rem;
+}
+
+.edit-cards-desc {
+  color: var(--color-gold, #ffd700);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .edit-cards-content {
+    padding: 1rem;
+  }
+  .edit-cards-header {
+    padding: 1.2rem 0.5rem 0.5rem 0.5rem;
+  }
+  .edit-cards-main {
+    padding: 1rem 0.5rem;
+  }
+} 
