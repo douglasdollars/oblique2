@@ -17,22 +17,27 @@ export class EditCardsPage {
   }
 
   render() {
-    const main = document.querySelector('main');
-    main.innerHTML = `
-      <div class="edit-cards-page">
-        <h1>Edit Cards</h1>
-        <div class="edit-cards-content">
-          <div class="add-card-section">
-            <h2>Add New Card</h2>
-            <div id="addCardForm"></div>
-          </div>
-          <div class="cards-list-section">
-            <h2>All Cards</h2>
-            <div id="searchAndTable"></div>
-          </div>
-        </div>
+    const container = document.createElement('div');
+    container.className = 'edit-cards-page';
+    container.innerHTML = `
+      <h1>Edit Cards</h1>
+      <div class="search-container"></div>
+      <div class="table-container"></div>
+      <div class="form-container">
+        <h2>Add New Card</h2>
+        <div class="add-form-container"></div>
       </div>
     `;
+
+    // Replace existing page if it exists
+    const existingPage = document.querySelector('.edit-cards-page');
+    if (existingPage) {
+      existingPage.replaceWith(container);
+    } else {
+      document.querySelector('main').appendChild(container);
+    }
+
+    this.element = container;
   }
 
   initializeComponents() {
@@ -53,38 +58,59 @@ export class EditCardsPage {
 
     // Initialize add form
     this.addForm = new AddCardForm({
-      onSubmit: (data) => {
-        this.cardService.addCard(data);
-        this.table.render();
+      onSubmit: async (data) => {
+        try {
+          await this.table.setLoading(true);
+          const newCard = await this.cardService.addCard(data);
+          const newData = this.cardService.getCards();
+          await this.table.updateData(newData, newCard.id);
+        } catch (error) {
+          console.error('Failed to add card:', error);
+        } finally {
+          await this.table.setLoading(false);
+        }
       }
     });
   }
 
-  handleEditCard(id) {
+  async handleEditCard(id) {
     const card = this.cardService.getCard(id);
     if (!card) return;
 
     const editForm = new EditCardForm({
       card,
-      onSubmit: (data) => {
-        this.cardService.updateCard(id, data);
-        this.table.render();
-        editForm.cleanup();
+      onSubmit: async (data) => {
+        try {
+          await this.table.setLoading(true);
+          await this.cardService.updateCard(id, data);
+          const newData = this.cardService.getCards();
+          await this.table.updateData(newData, id);
+          editForm.cleanup();
+        } catch (error) {
+          console.error('Failed to update card:', error);
+        } finally {
+          await this.table.setLoading(false);
+        }
       },
       onCancel: () => editForm.cleanup()
     });
   }
 
-  handleDeleteCard(id) {
+  async handleDeleteCard(id) {
     const card = this.cardService.getCard(id);
     if (!card) return;
 
     const deleteDialog = new DeleteConfirmation({
       card,
-      onConfirm: () => {
-        this.cardService.deleteCard(id);
-        this.table.render();
-        deleteDialog.cleanup();
+      onConfirm: async () => {
+        try {
+          await this.cardService.deleteCard(id);
+          const newData = this.cardService.getCards();
+          await this.table.updateData(newData);
+          deleteDialog.cleanup();
+        } catch (error) {
+          console.error('Failed to delete card:', error);
+        }
       },
       onCancel: () => deleteDialog.cleanup()
     });
@@ -94,5 +120,8 @@ export class EditCardsPage {
     this.searchBar?.cleanup();
     this.table?.cleanup();
     this.addForm?.cleanup();
+    if (this.element) {
+      this.element.remove();
+    }
   }
 } 

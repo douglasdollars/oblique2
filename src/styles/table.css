@@ -53,8 +53,22 @@
   opacity: 1;
 }
 
+.cards-table tbody tr {
+  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
 .cards-table tbody tr:hover {
   background-color: rgba(255, 215, 0, 0.05);
+}
+
+.cards-table tbody tr.highlight-success {
+  background-color: rgba(255, 215, 0, 0.1);
+  transition: background-color 1.5s ease;
+}
+
+.cards-table tbody tr.highlight-error {
+  background-color: rgba(255, 0, 0, 0.1);
+  transition: background-color 1.5s ease;
 }
 
 .cards-table td {
@@ -100,31 +114,60 @@
   opacity: 0.8;
 }
 
+.cards-table .loading-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.cards-table .loading-indicator::after {
+  content: '';
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .edit-button,
 .delete-button {
   padding: 0.5rem 1rem;
   margin-left: 0.5rem;
+  background-color: transparent;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
-  background: none;
   color: var(--color-primary);
   cursor: pointer;
-  font-size: 0.875rem;
   transition: all var(--transition-normal);
 }
 
-.edit-button:hover {
+.edit-button:hover,
+.delete-button:hover {
   background-color: var(--color-primary);
   color: var(--color-surface);
 }
 
 .delete-button {
-  border-color: #dc3545;
-  color: #dc3545;
+  border-color: #ff4444;
+  color: #ff4444;
 }
 
 .delete-button:hover {
-  background-color: #dc3545;
+  background-color: #ff4444;
   color: var(--color-surface);
 }
 
@@ -190,4 +233,110 @@
   .cards-table td button {
     display: none;
   }
+}
+
+/* Keyboard shortcuts help */
+.keyboard-shortcuts-help {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.keyboard-shortcuts-help details {
+  color: var(--color-text-light);
+}
+
+.keyboard-shortcuts-help summary {
+  cursor: pointer;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.keyboard-shortcuts-help ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  list-style-type: none;
+}
+
+.keyboard-shortcuts-help li {
+  margin: 0.25rem 0;
+}
+
+.keyboard-shortcuts-help kbd {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.8rem;
+  font-family: monospace;
+  line-height: 1;
+  color: var(--color-primary);
+  background-color: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Bulk actions toolbar */
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(255, 215, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.bulk-actions.hidden {
+  display: none;
+}
+
+.bulk-actions span {
+  color: var(--color-text-light);
+}
+
+.bulk-actions .selected-count {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.bulk-actions button {
+  padding: 0.5rem 1rem;
+  color: var(--color-text-light);
+  background-color: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.bulk-actions button:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: var(--color-primary);
+}
+
+.bulk-actions .bulk-delete {
+  color: #ff4444;
+  border-color: rgba(255, 68, 68, 0.3);
+}
+
+.bulk-actions .bulk-delete:hover {
+  background-color: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+}
+
+/* Selection styles */
+.cards-table tr[data-selected="true"] {
+  background-color: rgba(255, 215, 0, 0.05);
+}
+
+.cards-table tr[data-selected="true"] td {
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* Focus styles */
+.cards-table tr:focus {
+  outline: none;
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+.cards-table tr:focus td {
+  border-color: var(--color-primary);
 } 

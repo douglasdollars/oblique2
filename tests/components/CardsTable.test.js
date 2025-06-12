@@ -6,6 +6,8 @@ describe('CardsTable Component', () => {
   let dom;
   let document;
   let container;
+  let cardsTable;
+  let mockOnBulkAction;
 
   const mockData = [
     { id: '1', text: 'Card 1', editions: ['Ed1'], notes: 'Note 1', imageUrl: 'img1.jpg' },
@@ -19,10 +21,99 @@ describe('CardsTable Component', () => {
     global.document = dom.window.document;
     document = dom.window.document;
     container = document.getElementById('container');
+    mockOnBulkAction = jest.fn();
+
+    cardsTable = new CardsTable({
+      data: mockData,
+      onBulkAction: mockOnBulkAction
+    });
+    container.appendChild(cardsTable.render());
   });
 
   afterEach(() => {
+    cardsTable.cleanup();
     dom.window.close();
+  });
+
+  describe('Bulk Operations', () => {
+    it('should toggle row selection', () => {
+      cardsTable.toggleRowSelection('1');
+      expect(cardsTable.selectedRows.has('1')).toBe(true);
+      expect(cardsTable.selectedRows.size).toBe(1);
+
+      cardsTable.toggleRowSelection('1');
+      expect(cardsTable.selectedRows.has('1')).toBe(false);
+      expect(cardsTable.selectedRows.size).toBe(0);
+    });
+
+    it('should toggle all selection', () => {
+      cardsTable.toggleAllSelection();
+      expect(cardsTable.selectedRows.size).toBe(mockData.length);
+
+      cardsTable.toggleAllSelection();
+      expect(cardsTable.selectedRows.size).toBe(0);
+    });
+
+    it('should show bulk actions toolbar when rows are selected', () => {
+      const bulkActions = document.querySelector('.bulk-actions');
+      expect(bulkActions.classList.contains('hidden')).toBe(true);
+
+      cardsTable.toggleRowSelection('1');
+      expect(bulkActions.classList.contains('hidden')).toBe(false);
+      expect(bulkActions.querySelector('.selected-count').textContent).toBe('1');
+    });
+
+    it('should execute bulk delete action', async () => {
+      cardsTable.toggleRowSelection('1');
+      cardsTable.toggleRowSelection('2');
+
+      await cardsTable.executeBulkAction('delete');
+      expect(mockOnBulkAction).toHaveBeenCalledWith('delete', [mockData[0], mockData[1]]);
+      expect(cardsTable.selectedRows.size).toBe(0);
+    });
+
+    it('should execute bulk export action', async () => {
+      cardsTable.toggleRowSelection('1');
+      cardsTable.toggleRowSelection('2');
+
+      await cardsTable.executeBulkAction('export');
+      expect(mockOnBulkAction).toHaveBeenCalledWith('export', [mockData[0], mockData[1]]);
+      expect(cardsTable.selectedRows.size).toBe(0);
+    });
+  });
+
+  describe('Keyboard Shortcuts', () => {
+    it('should handle select all shortcut', () => {
+      cardsTable.handleKeyboardShortcut('selectAll');
+      expect(cardsTable.selectedRows.size).toBe(mockData.length);
+    });
+
+    it('should handle clear selection shortcut', () => {
+      cardsTable.toggleRowSelection('1');
+      cardsTable.toggleRowSelection('2');
+      cardsTable.handleKeyboardShortcut('clearSelection');
+      expect(cardsTable.selectedRows.size).toBe(0);
+    });
+
+    it('should handle bulk delete shortcut', () => {
+      cardsTable.toggleRowSelection('1');
+      cardsTable.toggleRowSelection('2');
+      cardsTable.handleKeyboardShortcut('bulkDelete');
+      expect(mockOnBulkAction).toHaveBeenCalledWith('delete', [mockData[0], mockData[1]]);
+    });
+
+    it('should handle adjacent row selection', () => {
+      const rows = document.querySelectorAll('tr[data-id]');
+      rows[0].focus();
+
+      cardsTable.handleKeyboardShortcut('selectNext');
+      expect(cardsTable.selectedRows.has('2')).toBe(true);
+      expect(document.activeElement).toBe(rows[1]);
+
+      cardsTable.handleKeyboardShortcut('selectPrevious');
+      expect(cardsTable.selectedRows.has('1')).toBe(true);
+      expect(document.activeElement).toBe(rows[0]);
+    });
   });
 
   it('should render table with correct columns', () => {
