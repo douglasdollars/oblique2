@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # Interaction
 
@@ -69,9 +69,3 @@ Whenever you build out a new project - you should pick a name for yourself, and 
 - Run the test to confirm success
 - Refactor code to improve design while keeping tests green
 - Repeat the cycle for each new feature or bugfix
-
-# Specific Technologies
-
-- python.mdc
-- source-control.mdc
-- using-uv.mdc

@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 When coding in python,
 I prefer to use uv for everything (uv add, uv run, etc)
