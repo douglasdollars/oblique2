@@ -3,8 +3,14 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/styles/main.css',
-  '/scripts/main.js',
-  // Add other static assets here
+  '/styles/card.css',
+  '/styles/navigation.css',
+  '/scripts/app.js',
+  '/scripts/Card.js',
+  '/scripts/CardService.js',
+  '/scripts/StorageService.js',
+  '/scripts/OfflineQueue.js',
+  '/scripts/ConnectionStatus.js'
 ];
 
 // Install event - cache static assets
@@ -16,7 +22,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate event - cleanup old caches
+// Activate event - clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
@@ -31,39 +37,44 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - serve from cache, falling back to network
 self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        if (response) {
-          return response; // Return cached response
-        }
+        // Return cached response if found
+        if (response) return response;
 
-        // Clone the request because it can only be used once
+        // Clone the request - it's a one-time use stream
         const fetchRequest = event.request.clone();
 
-        return fetch(fetchRequest)
-          .then(response => {
-            // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response because it can only be used once
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
+        // Make network request and cache the response
+        return fetch(fetchRequest).then(response => {
+          // Check if we received a valid response
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
-          })
-          .catch(() => {
-            // Return a fallback response for failed requests
-            return new Response('Offline content not available');
-          });
+          }
+
+          // Clone the response - it's a one-time use stream
+          const responseToCache = response.clone();
+
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+
+          return response;
+        });
+      })
+      .catch(() => {
+        // Return a fallback response for failed requests
+        return new Response('Offline - Content not available', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
       })
   );
 });
@@ -75,34 +86,53 @@ self.addEventListener('sync', event => {
   }
 });
 
+// Function to sync cards with the server
 async function syncCards() {
   try {
-    // Get queued operations from IndexedDB
-    const queue = await getQueuedOperations();
-    
-    // Process each operation
-    for (const operation of queue) {
-      await processOperation(operation);
+    const clients = await self.clients.matchAll();
+    const client = clients[0];
+
+    // Send message to client to initiate sync
+    if (client) {
+      client.postMessage({
+        type: 'sync-started'
+      });
     }
-    
-    // Clear processed operations
-    await clearQueuedOperations();
+
+    // Get pending operations from IndexedDB or other storage
+    const pendingOps = await getPendingOperations();
+
+    // Process each operation
+    for (const op of pendingOps) {
+      try {
+        await processOperation(op);
+      } catch (error) {
+        console.error('Sync operation failed:', error);
+      }
+    }
+
+    // Notify client of sync completion
+    if (client) {
+      client.postMessage({
+        type: 'sync-completed'
+      });
+    }
   } catch (error) {
     console.error('Sync failed:', error);
-    throw error; // Retry sync later
+    throw error;
   }
 }
 
-// Helper functions for sync (to be implemented)
-async function getQueuedOperations() {
-  // Implementation will be added in sync phase
+// Helper function to get pending operations
+async function getPendingOperations() {
+  // Implementation will depend on how operations are stored
+  // This is a placeholder
   return [];
 }
 
+// Helper function to process an operation
 async function processOperation(operation) {
-  // Implementation will be added in sync phase
-}
-
-async function clearQueuedOperations() {
-  // Implementation will be added in sync phase
+  // Implementation will depend on the operation type
+  // This is a placeholder
+  return Promise.resolve();
 } 
