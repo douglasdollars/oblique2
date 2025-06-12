@@ -18,9 +18,23 @@ describe('TableAnimations', () => {
     document.body.appendChild(element);
 
     // Mock the Web Animations API
-    element.animate = jest.fn().mockReturnValue({
+    const mockAnimation = {
       onfinish: null,
-      finished: Promise.resolve()
+      finished: Promise.resolve(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn()
+    };
+    
+    element.animate = jest.fn().mockReturnValue(mockAnimation);
+    
+    // Immediately trigger the finish callback
+    element.animate.mockImplementation(() => {
+      setTimeout(() => {
+        if (mockAnimation.onfinish) {
+          mockAnimation.onfinish();
+        }
+      }, 0);
+      return mockAnimation;
     });
   });
 

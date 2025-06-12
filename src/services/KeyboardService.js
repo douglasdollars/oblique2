@@ -6,12 +6,12 @@ export class KeyboardService {
       ...options
     };
     this.isEnabled = true;
-    this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+    this.boundHandleKeyPress = this.handleKeyPress.bind(this);
     this.init();
   }
 
   init() {
-    document.addEventListener('keydown', this.handleKeyPress.bind(this));
+    document.addEventListener('keydown', this.boundHandleKeyPress);
   }
 
   handleKeyPress(event) {
@@ -114,6 +114,6 @@ export class KeyboardService {
   }
 
   cleanup() {
-    document.removeEventListener('keydown', this.handleKeyPress);
+    document.removeEventListener('keydown', this.boundHandleKeyPress);
   }
 } 

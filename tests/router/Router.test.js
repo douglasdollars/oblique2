@@ -18,12 +18,9 @@ describe('Router', () => {
     global.document = document;
 
     // Mock location.hash
-    Object.defineProperty(window, 'location', {
-      value: {
-        hash: '#/',
-      },
-      writable: true,
-    });
+    if (!window.location.hash) {
+      window.location.hash = '#/';
+    }
 
     // Create mock components
     mockComponent = class {

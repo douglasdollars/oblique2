@@ -14,7 +14,9 @@ describe('EditCardsPage', () => {
   });
 
   afterEach(() => {
-    page.cleanup();
+    if (page && page.cleanup) {
+      page.cleanup();
+    }
     dom.window.close();
   });
 

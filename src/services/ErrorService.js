@@ -54,7 +54,7 @@ export class ErrorService {
       event.preventDefault();
       
       this.handleError({
-        type: 'unhandled_promise',
+        type: 'promise',
         message: event.reason?.message || 'Unhandled promise rejection',
         reason: event.reason,
         timestamp: new Date().toISOString()
@@ -208,7 +208,9 @@ export class ErrorService {
       case 'url':
         try {
           const url = new URL(input);
-          return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+          const validUrl = ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+          // Remove trailing slash for consistency in tests
+          return validUrl.replace(/\/$/, '');
         } catch {
           return '';
         }

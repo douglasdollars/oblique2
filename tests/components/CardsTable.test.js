@@ -31,7 +31,9 @@ describe('CardsTable Component', () => {
   });
 
   afterEach(() => {
-    cardsTable.cleanup();
+    if (cardsTable && cardsTable.cleanup) {
+      cardsTable.cleanup();
+    }
     dom.window.close();
   });
 
