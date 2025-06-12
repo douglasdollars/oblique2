@@ -1,0 +1,422 @@
+/* Responsive Design System */
+
+/* Breakpoints */
+:root {
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* Base Mobile-First Styles */
+html {
+  font-size: 14px; /* Base mobile font size */
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Touch-friendly interaction targets */
+button,
+.btn,
+a,
+input,
+textarea,
+select {
+  min-height: 44px; /* iOS recommended minimum */
+  min-width: 44px;
+}
+
+/* Mobile-first navigation */
+.navigation {
+  padding: var(--space-2) var(--space-3);
+}
+
+.navigation-title {
+  font-size: 1.25rem;
+}
+
+.navigation-links {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 0.875rem;
+}
+
+/* Mobile-first card scaling */
+.card-stack {
+  max-width: 280px;
+  margin: var(--space-4) auto;
+}
+
+.card {
+  max-width: 280px;
+}
+
+/* Mobile-first button styling */
+.another-button {
+  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  min-width: 160px;
+  margin: var(--space-4) auto;
+}
+
+/* Mobile-first table layout */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cards-table {
+  min-width: 600px;
+  font-size: 0.875rem;
+}
+
+.cards-table th,
+.cards-table td {
+  padding: var(--space-2);
+  white-space: nowrap;
+}
+
+/* Mobile-first form layout */
+.form-group {
+  margin-bottom: var(--space-3);
+}
+
+.form-input,
+.form-textarea {
+  font-size: 16px; /* Prevents zoom on iOS */
+  padding: var(--space-3);
+}
+
+/* Mobile-first modal layout */
+.modal-container {
+  width: 95%;
+  margin: var(--space-2);
+  max-height: 90vh;
+}
+
+/* Small devices (landscape phones, 640px and up) */
+@media (min-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+
+  .navigation {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .navigation-title {
+    font-size: 1.5rem;
+  }
+
+  .navigation-links {
+    font-size: 1rem;
+    gap: var(--space-4);
+  }
+
+  .card-stack {
+    max-width: 320px;
+  }
+
+  .card {
+    max-width: 320px;
+  }
+
+  .another-button {
+    font-size: 1.125rem;
+    padding: var(--space-3) var(--space-5);
+    min-width: 180px;
+  }
+
+  .cards-table {
+    font-size: 1rem;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: var(--space-3);
+  }
+
+  .modal-container {
+    width: 90%;
+    margin: var(--space-4);
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .navigation {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .card-stack {
+    max-width: 350px;
+  }
+
+  .card {
+    max-width: 350px;
+  }
+
+  .another-button {
+    font-size: 1.25rem;
+    padding: var(--space-4) var(--space-6);
+    min-width: 200px;
+  }
+
+  /* Table becomes more spacious */
+  .cards-table {
+    min-width: auto;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: var(--space-3) var(--space-4);
+    white-space: normal;
+  }
+
+  /* Form improvements */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .form-grid .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .modal-container {
+    width: 80%;
+    max-width: 600px;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  html {
+    font-size: 18px;
+  }
+
+  .navigation {
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .navigation-title {
+    font-size: 1.75rem;
+  }
+
+  .navigation-links {
+    font-size: 1.125rem;
+    gap: var(--space-5);
+  }
+
+  .card-stack {
+    max-width: 400px;
+  }
+
+  .card {
+    max-width: 400px;
+  }
+
+  .another-button {
+    font-size: 1.375rem;
+    padding: var(--space-4) var(--space-7);
+    min-width: 220px;
+  }
+
+  /* Desktop table enhancements */
+  .cards-table th,
+  .cards-table td {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  /* Desktop form enhancements */
+  .form-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .modal-container {
+    width: 70%;
+    max-width: 800px;
+  }
+
+  /* Desktop-specific interactions */
+  .card-stack:hover .card:first-child {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-out;
+  }
+
+  .cards-table tbody tr:hover {
+    background-color: rgba(255, 215, 0, 0.05);
+  }
+}
+
+/* Extra large devices (large desktops, 1280px and up) */
+@media (min-width: 1280px) {
+  .navigation {
+    padding: var(--space-5) var(--space-7);
+  }
+
+  .card-stack {
+    max-width: 450px;
+  }
+
+  .card {
+    max-width: 450px;
+  }
+
+  .another-button {
+    font-size: 1.5rem;
+    padding: var(--space-5) var(--space-8);
+    min-width: 240px;
+  }
+}
+
+/* 2XL devices (larger desktops, 1536px and up) */
+@media (min-width: 1536px) {
+  html {
+    font-size: 20px;
+  }
+
+  .card-stack {
+    max-width: 500px;
+  }
+
+  .card {
+    max-width: 500px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button,
+  .btn,
+  a,
+  input,
+  textarea,
+  select {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Remove hover effects that don't work on touch */
+  .card-stack:hover .card:first-child {
+    transform: none;
+  }
+
+  .cards-table tbody tr:hover {
+    background-color: transparent;
+  }
+
+  /* Enhanced touch feedback */
+  .another-button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease-out;
+  }
+
+  .card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Optimize shadows and effects for high DPI */
+  .card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .another-button {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .card-stack {
+    max-width: 250px;
+    margin: var(--space-2) auto;
+  }
+
+  .another-button {
+    margin: var(--space-2) auto;
+    padding: var(--space-2) var(--space-4);
+    font-size: 1rem;
+  }
+
+  .navigation {
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+/* Print optimizations */
+@media print {
+  html {
+    font-size: 12pt;
+  }
+
+  .navigation,
+  .another-button,
+  .modal,
+  .site-footer {
+    display: none;
+  }
+
+  .card {
+    max-width: none;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .cards-table {
+    font-size: 10pt;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: 4pt;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Accessibility: High contrast */
+@media (forced-colors: active) {
+  .card {
+    border: 1px solid ButtonText;
+  }
+
+  .another-button {
+    border: 1px solid ButtonText;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    border: 1px solid ButtonText;
+  }
+}
+
+/* Dark mode support (if system preference) */
+@media (prefers-color-scheme: dark) {
+  /* Our design is already dark, but we can enhance it */
+  :root {
+    --color-text-light: #ffffff;
+    --color-text-muted: #cccccc;
+  }
+} 
