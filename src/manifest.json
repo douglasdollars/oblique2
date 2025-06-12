@@ -1,0 +1,24 @@
+{
+  "name": "Oblique Strategies",
+  "short_name": "Oblique",
+  "description": "A digital implementation of Brian Eno and Peter Schmidt's Oblique Strategies",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "categories": ["productivity", "creativity"],
+  "prefer_related_applications": false
+} 
