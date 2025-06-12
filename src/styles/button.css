@@ -1,0 +1,131 @@
+.another-button {
+  --button-padding: 1rem 2rem;
+  --button-border-radius: 0.5rem;
+  --button-transition: all 0.2s ease-in-out;
+  --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --button-glow: 0 0 10px rgba(255, 215, 0, 0.3);
+  --button-glow-hover: 0 0 15px rgba(255, 215, 0, 0.5);
+  --button-scale-hover: 1.02;
+  --button-scale-active: 0.98;
+
+  background-color: var(--color-black);
+  color: var(--color-gold);
+  border: 2px solid var(--color-gold);
+  padding: var(--button-padding);
+  border-radius: var(--button-border-radius);
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--button-transition);
+  box-shadow: var(--button-shadow);
+  position: relative;
+  margin: 2rem auto;
+  display: block;
+  min-width: 200px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transform-origin: center;
+  will-change: transform, box-shadow, background-color, color;
+}
+
+.another-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(255, 215, 0, 0) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  border-radius: var(--button-border-radius);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.another-button:hover:not(:disabled) {
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  box-shadow: var(--button-glow-hover);
+  transform: translateY(-1px) scale(var(--button-scale-hover));
+}
+
+.another-button:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.another-button:active:not(:disabled) {
+  transform: translateY(1px) scale(var(--button-scale-active));
+  box-shadow: var(--button-shadow);
+  transition-duration: 0.1s;
+}
+
+.another-button:focus {
+  outline: none;
+  box-shadow: var(--button-glow);
+}
+
+.another-button:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.another-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--color-gold-muted);
+  color: var(--color-gold-muted);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .another-button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: var(--button-shadow);
+  }
+  
+  .another-button:active:not(:disabled) {
+    background-color: var(--color-gold);
+    color: var(--color-black);
+    transform: scale(var(--button-scale-active));
+  }
+}
+
+/* High DPI display optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .another-button {
+    --button-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --button-glow: 0 0 5px rgba(255, 215, 0, 0.2);
+    --button-glow-hover: 0 0 8px rgba(255, 215, 0, 0.3);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .another-button {
+    font-size: 1.125rem;
+    padding: 0.875rem 1.75rem;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .another-button {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    min-width: 160px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .another-button {
+    display: none;
+  }
+} 
