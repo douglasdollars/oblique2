@@ -2,6 +2,7 @@ import { SortingUtils } from '../utils/SortingUtils.js';
 import { Pagination } from './Pagination.js';
 import { TableAnimations } from '../animations/TableAnimations.js';
 import { KeyboardService } from '../services/KeyboardService.js';
+import { SearchBar } from './SearchBar.js';
 
 export class CardsTable {
   constructor(options = {}) {
@@ -36,6 +37,14 @@ export class CardsTable {
   }
 
   init() {
+    this.searchBar = new SearchBar({
+      onSearch: (term) => {
+        this.searchTerm = term;
+        this.currentPage = 1; // Reset to first page on search
+        this.render();
+        return this.getFilteredData().length;
+      }
+    });
     this.render();
     this.attachEventListeners();
   }
@@ -314,13 +323,6 @@ export class CardsTable {
     return !isNaN(page) && page > 0 ? page : 1;
   }
 
-  setSearchTerm(term) {
-    this.searchTerm = term;
-    this.currentPage = 1; // Reset to first page on search
-    this.render();
-    return this.getFilteredData().length;
-  }
-
   renderEditions(editions) {
     if (!editions || !editions.length) return '';
     return editions.map(edition => `
@@ -329,9 +331,11 @@ export class CardsTable {
   }
 
   highlightSearchTerm(text) {
-    if (!this.searchTerm || !text) return text;
-    const regex = new RegExp(`(${this.searchTerm})`, 'gi');
-    return text.replace(regex, '<mark>$1</mark>');
+    if (!text || !this.searchTerm) return text;
+    
+    const escapedTerm = this.searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedTerm})`, 'gi');
+    return text.replace(regex, '<span class="search-highlight">$1</span>');
   }
 
   cleanup() {

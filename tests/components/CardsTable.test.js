@@ -151,12 +151,94 @@ describe('CardsTable Component', () => {
   });
 
   it('should filter data based on search term', () => {
-    const table = new CardsTable(container, mockData);
-    table.search('Card 2');
+    const mockData = [
+      { id: '1', text: 'First card', editions: ['Ed1'] },
+      { id: '2', text: 'Second card', editions: ['Ed2'] },
+      { id: '3', text: 'Third card', editions: ['Ed3'] }
+    ];
+    const table = new CardsTable({ data: mockData });
+    const searchInput = document.querySelector('.search-input');
     
-    const rows = document.querySelectorAll('tbody tr');
-    expect(rows.length).toBe(1);
-    expect(rows[0].querySelector('td').textContent).toBe('Card 2');
+    searchInput.value = 'Second';
+    searchInput.dispatchEvent(new Event('input'));
+    
+    setTimeout(() => {
+      const rows = document.querySelectorAll('tbody tr');
+      expect(rows.length).toBe(1);
+      expect(rows[0].querySelector('td').textContent).toContain('Second card');
+    }, 350);
+  });
+
+  it('should highlight search matches', () => {
+    const mockData = [
+      { id: '1', text: 'Test card', editions: ['Ed1'] }
+    ];
+    const table = new CardsTable({ data: mockData });
+    const searchInput = document.querySelector('.search-input');
+    
+    searchInput.value = 'test';
+    searchInput.dispatchEvent(new Event('input'));
+    
+    setTimeout(() => {
+      const cell = document.querySelector('tbody td');
+      expect(cell.innerHTML).toContain('<span class="search-highlight">Test</span>');
+    }, 350);
+  });
+
+  it('should show no results message when search has no matches', () => {
+    const mockData = [
+      { id: '1', text: 'Test card', editions: ['Ed1'] }
+    ];
+    const table = new CardsTable({ data: mockData });
+    const searchInput = document.querySelector('.search-input');
+    
+    searchInput.value = 'nonexistent';
+    searchInput.dispatchEvent(new Event('input'));
+    
+    setTimeout(() => {
+      const noData = document.querySelector('.no-data');
+      expect(noData.textContent).toContain('No cards match your search');
+    }, 350);
+  });
+
+  it('should reset to first page when searching', () => {
+    const mockData = Array.from({ length: 30 }, (_, i) => ({
+      id: String(i + 1),
+      text: `Card ${i + 1}`,
+      editions: [`Ed${i + 1}`]
+    }));
+    const table = new CardsTable({ data: mockData, itemsPerPage: 10 });
+    
+    // Go to second page
+    const nextButton = document.querySelector('.pagination-button.next');
+    nextButton.click();
+    
+    // Search
+    const searchInput = document.querySelector('.search-input');
+    searchInput.value = 'Card';
+    searchInput.dispatchEvent(new Event('input'));
+    
+    setTimeout(() => {
+      const currentPage = document.querySelector('.pagination-button.active');
+      expect(currentPage.textContent.trim()).toBe('1');
+    }, 350);
+  });
+
+  it('should update search result count', () => {
+    const mockData = [
+      { id: '1', text: 'Test card 1', editions: ['Ed1'] },
+      { id: '2', text: 'Test card 2', editions: ['Ed2'] }
+    ];
+    const table = new CardsTable({ data: mockData });
+    const searchInput = document.querySelector('.search-input');
+    
+    searchInput.value = 'Test';
+    searchInput.dispatchEvent(new Event('input'));
+    
+    setTimeout(() => {
+      const status = document.querySelector('.search-status');
+      expect(status.textContent).toBe('Found 2 cards');
+    }, 350);
   });
 
   it('should handle pagination', () => {
