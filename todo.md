@@ -55,31 +55,31 @@
 
 ### ✅ Step 1.3: Core Data Model and Local Storage
 
-- [ ] Create `src/models/Card.js`
-  - [ ] Create Card class/object structure with properties: id, text, editions[], notes, imageUrl
-  - [ ] Add validation methods for required fields (text, editions)
-  - [ ] Implement edition name validation (30 chars max, alphanumeric + spaces only)
-- [ ] Create `src/services/StorageService.js`
-  - [ ] Create LocalStorage wrapper with error handling
-  - [ ] Implement getCards() method
-  - [ ] Implement saveCards() method
-  - [ ] Implement addCard() method
-  - [ ] Implement updateCard() method
-  - [ ] Implement deleteCard() method
-  - [ ] Add data serialization/deserialization
-  - [ ] Add storage quota checking
-- [ ] Create `src/services/CardService.js`
-  - [ ] Add business logic for card operations
-  - [ ] Implement random card selection with fallback handling
-  - [ ] Add card pool management
-  - [ ] Create fallback card creation ("[we've created mystery]")
-- [ ] Create initial seed data with at least 10 sample Oblique Strategy cards
-- [ ] Write comprehensive tests
-  - [ ] Test data model validation
-  - [ ] Test storage operations
-  - [ ] Test card service methods
-  - [ ] Test error handling scenarios
-- [ ] Include proper error boundaries and data validation throughout
+- [x] Create `src/models/Card.js`
+  - [x] Create Card class/object structure with properties: id, text, editions[], notes, imageUrl
+  - [x] Add validation methods for required fields (text, editions)
+  - [x] Implement edition name validation (30 chars max, alphanumeric + spaces only)
+- [x] Create `src/services/StorageService.js`
+  - [x] Create LocalStorage wrapper with error handling
+  - [x] Implement getCards() method
+  - [x] Implement saveCards() method
+  - [x] Implement addCard() method
+  - [x] Implement updateCard() method
+  - [x] Implement deleteCard() method
+  - [x] Add data serialization/deserialization
+  - [x] Add storage quota checking
+- [x] Create `src/services/CardService.js`
+  - [x] Add business logic for card operations
+  - [x] Implement random card selection with fallback handling
+  - [x] Add card pool management
+  - [x] Create fallback card creation ("[we've created mystery]")
+- [x] Create initial seed data with at least 10 sample Oblique Strategy cards
+- [x] Write comprehensive tests
+  - [x] Test data model validation
+  - [x] Test storage operations
+  - [x] Test card service methods
+  - [x] Test error handling scenarios
+- [x] Include proper error boundaries and data validation throughout
 
 ### ✅ Step 1.4: Design System and Typography
 
