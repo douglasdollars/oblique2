@@ -83,6 +83,29 @@
 
 ### ✅ Step 1.4: Design System and Typography
 
+- [x] Create `src/styles/design-system.css`
+  - [x] Add primary colors: black (#000000), dark grey (#1a1a1a), gold (#ffd700)
+  - [x] Add text colors: light grey for contrast, bright gold for accents
+  - [x] Add spacing scale (4px, 8px, 16px, 24px, 32px, 48px, 64px)
+  - [x] Add border radius values
+  - [x] Add box shadow definitions
+- [x] Create `src/styles/typography.css`
+  - [x] Select sans-serif font stack
+  - [x] Define font size scale and line heights
+  - [x] Create text styling utilities (center alignment, weights)
+  - [x] Add responsive text scaling
+- [x] Create `src/styles/components.css`
+  - [x] Add button base styles with golden accents
+  - [x] Add card base styles with paper texture
+  - [x] Add table base styles
+  - [x] Add form input base styles
+- [x] Create utility classes
+  - [x] Add text alignment and color variations
+  - [x] Add spacing utilities (margin/padding)
+  - [x] Add display and positioning utilities
+- [x] Write tests
+  - [x] Verify CSS custom properties are defined correctly
+  - [x] Test typography scales appropriately
 - [ ] Create `src/styles/design-system.css`
   - [ ] Add primary colors: black (#000000), dark grey (#1a1a1a), gold (#ffd700)
   - [ ] Add text colors: light grey for contrast, bright gold for accents

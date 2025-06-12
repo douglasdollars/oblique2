@@ -1,0 +1,160 @@
+/* Font Stack */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+}
+
+/* Base Typography */
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: var(--color-text-light);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Font Sizes */
+.text-xs {
+  font-size: 0.75rem;  /* 12px */
+  line-height: 1.25;
+}
+
+.text-sm {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.375;
+}
+
+.text-base {
+  font-size: 1rem;     /* 16px */
+  line-height: 1.5;
+}
+
+.text-lg {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.5;
+}
+
+.text-xl {
+  font-size: 1.25rem;  /* 20px */
+  line-height: 1.5;
+}
+
+.text-2xl {
+  font-size: 1.5rem;   /* 24px */
+  line-height: 1.375;
+}
+
+.text-3xl {
+  font-size: 1.875rem; /* 30px */
+  line-height: 1.25;
+}
+
+.text-4xl {
+  font-size: 2.25rem;  /* 36px */
+  line-height: 1.25;
+}
+
+/* Font Weights */
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Text Alignment */
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-primary-bright {
+  color: var(--color-primary-bright);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Text Transforms */
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* Text Decoration */
+.underline {
+  text-decoration: underline;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+/* Responsive Typography */
+@media (min-width: 640px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  html {
+    font-size: 12pt;
+  }
+  
+  body {
+    color: #000;
+  }
+} 
