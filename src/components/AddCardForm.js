@@ -1,3 +1,5 @@
+import { TagInput } from './TagInput.js';
+
 export class AddCardForm {
   constructor(options = {}) {
     this.options = {
@@ -43,23 +45,7 @@ export class AddCardForm {
 
       <div class="form-group ${this.errors.editions ? 'has-error' : ''}">
         <label class="form-label" for="cardEditions">Editions *</label>
-        <div class="tag-input-container">
-          <input
-            id="cardEditions"
-            class="form-input tag-input"
-            type="text"
-            placeholder="Type and press Enter to add editions"
-            aria-describedby="editionsError"
-          />
-          <div class="tags-container">
-            ${this.formData.editions.map(edition => `
-              <span class="tag">
-                ${edition}
-                <button type="button" class="tag-remove" data-edition="${edition}">×</button>
-              </span>
-            `).join('')}
-          </div>
-        </div>
+        <div id="editionsInput"></div>
         ${this.errors.editions ? `
           <span class="error-message" id="editionsError">${this.errors.editions}</span>
         ` : ''}
@@ -77,13 +63,13 @@ export class AddCardForm {
       </div>
 
       <div class="form-group ${this.errors.imageUrl ? 'has-error' : ''}">
-        <label class="form-label" for="cardImageUrl">Image URL</label>
+        <label class="form-label" for="cardImageUrl">Imagery URL</label>
         <input
+          type="url"
           id="cardImageUrl"
           class="form-input"
-          type="url"
           name="imageUrl"
-          placeholder="Optional image URL"
+          placeholder="Optional URL for card imagery"
           value="${this.formData.imageUrl}"
           aria-describedby="imageUrlError"
         />
@@ -93,7 +79,7 @@ export class AddCardForm {
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Add Card</button>
+        <button type="submit" class="submit-button">Add Card</button>
       </div>
     `;
 
@@ -102,10 +88,20 @@ export class AddCardForm {
     if (existingForm) {
       existingForm.replaceWith(form);
     } else {
-      document.querySelector('.edit-cards-content').appendChild(form);
+      document.querySelector('#addCardForm').appendChild(form);
     }
 
     this.element = form;
+
+    // Initialize TagInput
+    this.tagInput = new TagInput({
+      initialTags: this.formData.editions,
+      placeholder: 'Type and press Enter to add editions',
+      onChange: (tags) => {
+        this.formData.editions = tags;
+        this.validateField('editions');
+      }
+    });
   }
 
   attachEventListeners() {
@@ -120,60 +116,51 @@ export class AddCardForm {
       }
     });
 
-    // Tag input handling
-    const tagInput = this.element.querySelector('.tag-input');
-    tagInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        const value = event.target.value.trim();
-        if (value && this.validateEdition(value)) {
-          this.addEdition(value);
-          event.target.value = '';
-        }
-      }
-    });
-
-    // Tag removal
-    this.element.addEventListener('click', (event) => {
-      const removeButton = event.target.closest('.tag-remove');
-      if (removeButton) {
-        const edition = removeButton.dataset.edition;
-        this.removeEdition(edition);
-      }
-    });
-
     // Real-time validation
     this.element.querySelectorAll('.form-input').forEach(input => {
       input.addEventListener('blur', () => {
         this.validateField(input.name);
       });
+
+      input.addEventListener('input', () => {
+        this.formData[input.name] = input.value;
+      });
     });
   }
 
   validateForm() {
-    this.errors = {};
-    
+    let isValid = true;
+
     // Validate text
     if (!this.formData.text.trim()) {
       this.errors.text = 'Card text is required';
+      isValid = false;
+    } else {
+      delete this.errors.text;
     }
 
     // Validate editions
-    if (this.formData.editions.length === 0) {
+    if (!this.formData.editions.length) {
       this.errors.editions = 'At least one edition is required';
+      isValid = false;
+    } else {
+      delete this.errors.editions;
     }
 
-    // Validate image URL if provided
-    if (this.formData.imageUrl && !this.validateUrl(this.formData.imageUrl)) {
+    // Validate imageUrl if provided
+    if (this.formData.imageUrl && !this.isValidUrl(this.formData.imageUrl)) {
       this.errors.imageUrl = 'Please enter a valid URL';
+      isValid = false;
+    } else {
+      delete this.errors.imageUrl;
     }
 
     this.render();
-    return Object.keys(this.errors).length === 0;
+    return isValid;
   }
 
-  validateField(fieldName) {
-    switch (fieldName) {
+  validateField(field) {
+    switch (field) {
       case 'text':
         if (!this.formData.text.trim()) {
           this.errors.text = 'Card text is required';
@@ -181,8 +168,15 @@ export class AddCardForm {
           delete this.errors.text;
         }
         break;
+      case 'editions':
+        if (!this.formData.editions.length) {
+          this.errors.editions = 'At least one edition is required';
+        } else {
+          delete this.errors.editions;
+        }
+        break;
       case 'imageUrl':
-        if (this.formData.imageUrl && !this.validateUrl(this.formData.imageUrl)) {
+        if (this.formData.imageUrl && !this.isValidUrl(this.formData.imageUrl)) {
           this.errors.imageUrl = 'Please enter a valid URL';
         } else {
           delete this.errors.imageUrl;
@@ -192,48 +186,13 @@ export class AddCardForm {
     this.render();
   }
 
-  validateEdition(edition) {
-    if (!edition) return false;
-    if (edition.length > 30) {
-      this.errors.editions = 'Edition name must be 30 characters or less';
-      this.render();
-      return false;
-    }
-    if (!/^[a-zA-Z0-9\s]+$/.test(edition)) {
-      this.errors.editions = 'Edition name can only contain letters, numbers, and spaces';
-      this.render();
-      return false;
-    }
-    if (this.formData.editions.includes(edition)) {
-      this.errors.editions = 'This edition has already been added';
-      this.render();
-      return false;
-    }
-    delete this.errors.editions;
-    return true;
-  }
-
-  validateUrl(url) {
+  isValidUrl(url) {
     try {
       new URL(url);
       return true;
     } catch {
       return false;
     }
-  }
-
-  addEdition(edition) {
-    this.formData.editions.push(edition);
-    delete this.errors.editions;
-    this.render();
-  }
-
-  removeEdition(edition) {
-    this.formData.editions = this.formData.editions.filter(e => e !== edition);
-    if (this.formData.editions.length === 0) {
-      this.errors.editions = 'At least one edition is required';
-    }
-    this.render();
   }
 
   resetForm() {
@@ -248,6 +207,7 @@ export class AddCardForm {
   }
 
   cleanup() {
+    this.tagInput?.cleanup();
     if (this.element) {
       this.element.remove();
     }

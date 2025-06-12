@@ -1,30 +1,23 @@
-import { AddCardForm } from './AddCardForm';
+import { AddCardForm } from './AddCardForm.js';
+import { TagInput } from './TagInput.js';
 
 export class EditCardForm extends AddCardForm {
   constructor(options = {}) {
     super({
       ...options,
       onSubmit: (data) => {
-        if (this.validateForm()) {
-          this.options.onUpdate?.(this.cardId, data);
-          this.cleanup();
+        if (options.onSubmit) {
+          options.onSubmit({ ...data, id: options.card.id });
         }
       }
     });
-    this.cardId = options.cardId;
-    this.loadCardData(options.cardData);
-  }
 
-  loadCardData(cardData) {
-    if (!cardData) return;
-    
     this.formData = {
-      text: cardData.text || '',
-      editions: [...(cardData.editions || [])],
-      notes: cardData.notes || '',
-      imageUrl: cardData.imageUrl || ''
+      text: options.card?.text || '',
+      editions: options.card?.editions || [],
+      notes: options.card?.notes || '',
+      imageUrl: options.card?.imageUrl || ''
     };
-    this.render();
   }
 
   render() {
@@ -51,23 +44,7 @@ export class EditCardForm extends AddCardForm {
 
       <div class="form-group ${this.errors.editions ? 'has-error' : ''}">
         <label class="form-label" for="cardEditions">Editions *</label>
-        <div class="tag-input-container">
-          <input
-            id="cardEditions"
-            class="form-input tag-input"
-            type="text"
-            placeholder="Type and press Enter to add editions"
-            aria-describedby="editionsError"
-          />
-          <div class="tags-container">
-            ${this.formData.editions.map(edition => `
-              <span class="tag">
-                ${edition}
-                <button type="button" class="tag-remove" data-edition="${edition}">×</button>
-              </span>
-            `).join('')}
-          </div>
-        </div>
+        <div id="editionsInput"></div>
         ${this.errors.editions ? `
           <span class="error-message" id="editionsError">${this.errors.editions}</span>
         ` : ''}
@@ -85,13 +62,13 @@ export class EditCardForm extends AddCardForm {
       </div>
 
       <div class="form-group ${this.errors.imageUrl ? 'has-error' : ''}">
-        <label class="form-label" for="cardImageUrl">Image URL</label>
+        <label class="form-label" for="cardImageUrl">Imagery URL</label>
         <input
+          type="url"
           id="cardImageUrl"
           class="form-input"
-          type="url"
           name="imageUrl"
-          placeholder="Optional image URL"
+          placeholder="Optional URL for card imagery"
           value="${this.formData.imageUrl}"
           aria-describedby="imageUrlError"
         />
@@ -101,8 +78,8 @@ export class EditCardForm extends AddCardForm {
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary" data-action="cancel">Cancel</button>
-        <button type="submit" class="btn btn-primary">Update Card</button>
+        <button type="submit" class="submit-button">Save Changes</button>
+        <button type="button" class="cancel-button">Cancel</button>
       </div>
     `;
 
@@ -111,36 +88,58 @@ export class EditCardForm extends AddCardForm {
     if (existingForm) {
       existingForm.replaceWith(form);
     } else {
-      document.querySelector('.edit-cards-content').appendChild(form);
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
+      modalContent.appendChild(form);
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.appendChild(modalContent);
+
+      document.body.appendChild(modal);
+      setTimeout(() => modal.classList.add('visible'), 10);
     }
 
     this.element = form;
-  }
+    this.modal = this.element.closest('.modal');
 
-  attachEventListeners() {
-    super.attachEventListeners();
+    // Initialize TagInput
+    this.tagInput = new TagInput({
+      initialTags: this.formData.editions,
+      placeholder: 'Type and press Enter to add editions',
+      onChange: (tags) => {
+        this.formData.editions = tags;
+        this.validateField('editions');
+      }
+    });
 
     // Add cancel button handler
-    const cancelButton = this.element.querySelector('[data-action="cancel"]');
-    cancelButton.addEventListener('click', () => {
-      this.options.onCancel?.();
-      this.cleanup();
-    });
-
-    // Add form field change tracking
-    this.element.querySelectorAll('.form-input').forEach(input => {
-      input.addEventListener('input', () => {
-        const name = input.name;
-        if (name && name in this.formData) {
-          this.formData[name] = input.value;
+    const cancelButton = this.element.querySelector('.cancel-button');
+    if (cancelButton) {
+      cancelButton.addEventListener('click', () => {
+        if (this.options.onCancel) {
+          this.options.onCancel();
         }
       });
-    });
+    }
+
+    // Add modal close on outside click
+    if (this.modal) {
+      this.modal.addEventListener('click', (event) => {
+        if (event.target === this.modal) {
+          if (this.options.onCancel) {
+            this.options.onCancel();
+          }
+        }
+      });
+    }
   }
 
   cleanup() {
-    if (this.element) {
-      this.element.remove();
+    super.cleanup();
+    if (this.modal) {
+      this.modal.classList.remove('visible');
+      setTimeout(() => this.modal.remove(), 300);
     }
   }
 } 

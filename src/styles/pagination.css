@@ -1,0 +1,134 @@
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--radius-lg);
+}
+
+.pagination-info {
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pagination-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.pagination-button:hover:not(.disabled):not(.active) {
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+.pagination-button:focus {
+  outline: none;
+  box-shadow: var(--shadow-gold);
+}
+
+.pagination-button.active {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  cursor: default;
+}
+
+.pagination-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-button.previous,
+.pagination-button.next {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .pagination-info {
+    text-align: center;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pagination-button {
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .pagination-button.previous,
+  .pagination-button.next {
+    font-size: 1rem;
+  }
+
+  .pagination-ellipsis {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .pagination-button {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+  }
+
+  .pagination-button:hover:not(.disabled):not(.active) {
+    background-color: ButtonFace;
+  }
+
+  .pagination-button.active {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .pagination-button.disabled {
+    opacity: 1;
+    color: GrayText;
+  }
+} 
