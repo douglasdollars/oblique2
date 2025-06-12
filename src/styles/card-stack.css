@@ -1,0 +1,95 @@
+.card-stack {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  margin: 2rem auto;
+  perspective: 1000px;
+}
+
+.card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease-out;
+  pointer-events: none;
+}
+
+.card-wrapper:first-child {
+  pointer-events: auto;
+}
+
+/* Stack depth effect */
+.card-wrapper:nth-child(2) {
+  filter: brightness(0.95);
+}
+
+.card-wrapper:nth-child(3) {
+  filter: brightness(0.9);
+}
+
+/* Hover effect for top card */
+.card-wrapper:first-child:hover {
+  transform: translateY(-4px) !important;
+  transition: transform 0.2s ease-out;
+}
+
+/* Active state for top card */
+.card-wrapper:first-child:active {
+  transform: translateY(0) !important;
+  transition: transform 0.1s ease-out;
+}
+
+/* Stack shadow effect */
+.card-stack::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 5%;
+  width: 90%;
+  height: 20px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  filter: blur(4px);
+  z-index: -1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-stack {
+    --card-width: 60mm;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-stack {
+    --card-width: 50mm;
+  }
+}
+
+/* High DPI display optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .card-wrapper:nth-child(2) {
+    filter: brightness(0.97);
+  }
+
+  .card-wrapper:nth-child(3) {
+    filter: brightness(0.94);
+  }
+}
+
+/* Print styles */
+@media print {
+  .card-stack::after {
+    display: none;
+  }
+
+  .card-wrapper {
+    position: relative;
+    page-break-inside: avoid;
+  }
+} 

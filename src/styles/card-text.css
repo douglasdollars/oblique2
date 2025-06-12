@@ -1,0 +1,83 @@
+.card-text-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--card-padding);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-text {
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  line-height: 1.4;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  max-width: 90%;
+  color: var(--card-text-color);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  transition: font-size 0.2s ease-out;
+  hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Text wrapping and line clamping */
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Accessibility enhancements */
+.card-text-container:focus-within {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive text scaling */
+@media (max-width: 768px) {
+  .card-text {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-text {
+    font-size: 1rem;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .card-text {
+    text-shadow: none;
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Print styles */
+@media print {
+  .card-text {
+    color: black;
+    text-shadow: none;
+  }
+} 

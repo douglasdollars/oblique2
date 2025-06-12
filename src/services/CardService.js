@@ -7,29 +7,40 @@ import { StorageService } from './StorageService.js';
 export class CardService {
   constructor() {
     this.storageService = new StorageService();
-    this.fallbackCard = new Card({
+    this.fallbackCard = {
       id: 'fallback',
       text: '[we\'ve created mystery]',
-      editions: ['fallback']
-    });
+      editions: ['fallback'],
+      notes: 'This card appears when there is an error or no cards are available.',
+      imageUrl: null
+    };
   }
 
   /**
-   * Get all cards
-   * @returns {Promise<Card[]>} Array of Card instances
+   * Get all cards from storage
+   * @returns {Promise<Array>} Array of card objects
    */
-  async getAllCards() {
-    return this.storageService.getCards();
+  async getCards() {
+    try {
+      const cards = await this.storageService.getCards();
+      return cards || [];
+    } catch (error) {
+      console.error('Error getting cards:', error);
+      return [];
+    }
   }
 
   /**
-   * Get a random card
-   * @returns {Promise<Card>} Random Card instance
+   * Get a random card from the available cards
+   * @returns {Promise<Object>} Random card object or fallback card
    */
   async getRandomCard() {
     try {
-      const cards = await this.getAllCards();
-      if (!cards.length) return this.fallbackCard;
+      const cards = await this.getCards();
+      
+      if (!cards || cards.length === 0) {
+        return this.fallbackCard;
+      }
 
       const randomIndex = Math.floor(Math.random() * cards.length);
       return cards[randomIndex];
@@ -40,79 +51,120 @@ export class CardService {
   }
 
   /**
-   * Add a new card
-   * @param {Object} cardData - Card data
-   * @returns {Promise<Card|null>} New Card instance or null if failed
+   * Add a new card to storage
+   * @param {Object} card Card object to add
+   * @returns {Promise<Object>} Added card object
    */
-  async addCard(cardData) {
+  async addCard(card) {
     try {
-      const card = new Card({
-        ...cardData,
-        id: this.generateId()
-      });
-
-      if (!card.validate()) {
+      if (!this.validateCard(card)) {
         throw new Error('Invalid card data');
       }
 
-      const success = await this.storageService.addCard(card);
-      return success ? card : null;
+      const cards = await this.getCards();
+      const newCard = {
+        ...card,
+        id: Date.now().toString() // Simple ID generation
+      };
+
+      cards.push(newCard);
+      await this.storageService.saveCards(cards);
+      return newCard;
     } catch (error) {
       console.error('Error adding card:', error);
-      return null;
+      throw error;
     }
   }
 
   /**
    * Update an existing card
-   * @param {string} id - Card ID to update
-   * @param {Object} cardData - Updated card data
-   * @returns {Promise<Card|null>} Updated Card instance or null if failed
+   * @param {string} id Card ID to update
+   * @param {Object} updates Updated card data
+   * @returns {Promise<Object>} Updated card object
    */
-  async updateCard(id, cardData) {
+  async updateCard(id, updates) {
     try {
-      const cards = await this.getAllCards();
-      const existingCard = cards.find(card => card.id === id);
-      if (!existingCard) return null;
-
-      const updatedCard = new Card({
-        ...existingCard.toJSON(),
-        ...cardData,
-        id // Preserve original ID
-      });
-
-      if (!updatedCard.validate()) {
+      if (!this.validateCard(updates)) {
         throw new Error('Invalid card data');
       }
 
-      const success = await this.storageService.updateCard(id, updatedCard);
-      return success ? updatedCard : null;
+      const cards = await this.getCards();
+      const index = cards.findIndex(card => card.id === id);
+
+      if (index === -1) {
+        throw new Error('Card not found');
+      }
+
+      cards[index] = { ...cards[index], ...updates };
+      await this.storageService.saveCards(cards);
+      return cards[index];
     } catch (error) {
       console.error('Error updating card:', error);
-      return null;
+      throw error;
     }
   }
 
   /**
    * Delete a card
-   * @param {string} id - Card ID to delete
+   * @param {string} id Card ID to delete
    * @returns {Promise<boolean>} Success status
    */
   async deleteCard(id) {
     try {
-      return await this.storageService.deleteCard(id);
+      const cards = await this.getCards();
+      const filteredCards = cards.filter(card => card.id !== id);
+
+      if (filteredCards.length === cards.length) {
+        throw new Error('Card not found');
+      }
+
+      await this.storageService.saveCards(filteredCards);
+      return true;
     } catch (error) {
       console.error('Error deleting card:', error);
-      return false;
+      throw error;
     }
   }
 
   /**
-   * Generate a unique ID for new cards
-   * @returns {string} Unique ID
+   * Validate card data
+   * @param {Object} card Card object to validate
+   * @returns {boolean} Validation result
    */
-  generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  validateCard(card) {
+    if (!card || typeof card !== 'object') {
+      return false;
+    }
+
+    // Required fields
+    if (!card.text || typeof card.text !== 'string' || card.text.trim() === '') {
+      return false;
+    }
+
+    // Editions validation
+    if (!Array.isArray(card.editions) || card.editions.length === 0) {
+      return false;
+    }
+
+    // Validate each edition
+    for (const edition of card.editions) {
+      if (typeof edition !== 'string' || 
+          edition.length > 30 || 
+          !/^[a-zA-Z0-9\s]+$/.test(edition)) {
+        return false;
+      }
+    }
+
+    // Optional fields validation
+    if (card.notes && typeof card.notes !== 'string') {
+      return false;
+    }
+
+    if (card.imageUrl && typeof card.imageUrl !== 'string') {
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -121,7 +173,7 @@ export class CardService {
    */
   async initializeStorage() {
     try {
-      const cards = await this.getAllCards();
+      const cards = await this.getCards();
       if (cards.length > 0) return true;
 
       const sampleCards = [

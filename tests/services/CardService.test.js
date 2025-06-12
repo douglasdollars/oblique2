@@ -1,145 +1,171 @@
 import { CardService } from '../../src/services/CardService.js';
 import { Card } from '../../src/models/Card.js';
+import { StorageService } from '../../src/services/StorageService.js';
 
 describe('CardService', () => {
   let cardService;
-  let mockStorageService;
+  let mockCards;
 
   beforeEach(() => {
-    mockStorageService = {
-      getCards: jest.fn(),
-      saveCards: jest.fn(),
-      addCard: jest.fn(),
-      updateCard: jest.fn(),
-      deleteCard: jest.fn()
-    };
+    // Reset mocks
+    jest.clearAllMocks();
+    
+    // Create test cards
+    mockCards = [
+      {
+        id: '1',
+        text: 'Test Card 1',
+        editions: ['test'],
+        notes: 'Test notes 1',
+        imageUrl: 'test1.jpg'
+      },
+      {
+        id: '2',
+        text: 'Test Card 2',
+        editions: ['test'],
+        notes: 'Test notes 2',
+        imageUrl: 'test2.jpg'
+      }
+    ];
 
-    // Mock the StorageService constructor
-    jest.spyOn(global, 'StorageService').mockImplementation(() => mockStorageService);
+    // Setup StorageService mock
+    StorageService.mockImplementation(() => ({
+      getCards: jest.fn().mockResolvedValue(mockCards),
+      saveCards: jest.fn().mockResolvedValue(true)
+    }));
+
     cardService = new CardService();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should get all cards', async () => {
-    const mockCards = [
-      new Card({
-        id: '1',
-        text: 'Test card 1',
-        editions: ['First Edition']
-      }),
-      new Card({
-        id: '2',
-        text: 'Test card 2',
-        editions: ['First Edition']
-      })
-    ];
-
-    mockStorageService.getCards.mockResolvedValue(mockCards);
-    const cards = await cardService.getAllCards();
-    expect(cards).toEqual(mockCards);
-  });
-
-  it('should get a random card', async () => {
-    const mockCards = [
-      new Card({
-        id: '1',
-        text: 'Test card 1',
-        editions: ['First Edition']
-      }),
-      new Card({
-        id: '2',
-        text: 'Test card 2',
-        editions: ['First Edition']
-      })
-    ];
-
-    mockStorageService.getCards.mockResolvedValue(mockCards);
-    const card = await cardService.getRandomCard();
-    expect(mockCards).toContain(card);
-  });
-
-  it('should return fallback card when no cards exist', async () => {
-    mockStorageService.getCards.mockResolvedValue([]);
-    const card = await cardService.getRandomCard();
-    expect(card).toBe(cardService.fallbackCard);
-  });
-
-  it('should add a new card', async () => {
-    const cardData = {
-      text: 'New card',
-      editions: ['First Edition']
-    };
-
-    mockStorageService.addCard.mockResolvedValue(true);
-    const card = await cardService.addCard(cardData);
-    expect(card).toBeInstanceOf(Card);
-    expect(card.text).toBe(cardData.text);
-    expect(card.editions).toEqual(cardData.editions);
-  });
-
-  it('should reject invalid card data', async () => {
-    const cardData = {
-      text: '',
-      editions: []
-    };
-
-    const card = await cardService.addCard(cardData);
-    expect(card).toBeNull();
-  });
-
-  it('should update an existing card', async () => {
-    const existingCard = new Card({
-      id: '1',
-      text: 'Original card',
-      editions: ['First Edition']
+  describe('getCards', () => {
+    it('should return all cards from storage', async () => {
+      const cards = await cardService.getCards();
+      expect(cards).toEqual(mockCards);
     });
 
-    const updateData = {
-      text: 'Updated card'
-    };
-
-    mockStorageService.getCards.mockResolvedValue([existingCard]);
-    mockStorageService.updateCard.mockResolvedValue(true);
-
-    const updatedCard = await cardService.updateCard('1', updateData);
-    expect(updatedCard).toBeInstanceOf(Card);
-    expect(updatedCard.text).toBe(updateData.text);
+    it('should return empty array if storage fails', async () => {
+      StorageService.mockImplementation(() => ({
+        getCards: jest.fn().mockRejectedValue(new Error('Storage error'))
+      }));
+      cardService = new CardService();
+      
+      const cards = await cardService.getCards();
+      expect(cards).toEqual([]);
+    });
   });
 
-  it('should return null when updating non-existent card', async () => {
-    mockStorageService.getCards.mockResolvedValue([]);
-    const updatedCard = await cardService.updateCard('1', { text: 'Updated' });
-    expect(updatedCard).toBeNull();
-  });
-
-  it('should delete a card', async () => {
-    mockStorageService.deleteCard.mockResolvedValue(true);
-    const success = await cardService.deleteCard('1');
-    expect(success).toBe(true);
-  });
-
-  it('should initialize storage with sample cards', async () => {
-    mockStorageService.getCards.mockResolvedValue([]);
-    mockStorageService.addCard.mockResolvedValue(true);
-
-    const success = await cardService.initializeStorage();
-    expect(success).toBe(true);
-    expect(mockStorageService.addCard).toHaveBeenCalledTimes(10);
-  });
-
-  it('should not initialize storage if cards exist', async () => {
-    const existingCard = new Card({
-      id: '1',
-      text: 'Existing card',
-      editions: ['First Edition']
+  describe('getRandomCard', () => {
+    it('should return a random card from available cards', async () => {
+      const card = await cardService.getRandomCard();
+      expect(mockCards).toContainEqual(card);
     });
 
-    mockStorageService.getCards.mockResolvedValue([existingCard]);
-    const success = await cardService.initializeStorage();
-    expect(success).toBe(true);
-    expect(mockStorageService.addCard).not.toHaveBeenCalled();
+    it('should return fallback card if no cards available', async () => {
+      StorageService.mockImplementation(() => ({
+        getCards: jest.fn().mockResolvedValue([])
+      }));
+      cardService = new CardService();
+
+      const card = await cardService.getRandomCard();
+      expect(card).toEqual(cardService.fallbackCard);
+    });
+
+    it('should return fallback card if storage fails', async () => {
+      StorageService.mockImplementation(() => ({
+        getCards: jest.fn().mockRejectedValue(new Error('Storage error'))
+      }));
+      cardService = new CardService();
+
+      const card = await cardService.getRandomCard();
+      expect(card).toEqual(cardService.fallbackCard);
+    });
+  });
+
+  describe('addCard', () => {
+    it('should add a valid card to storage', async () => {
+      const newCard = {
+        text: 'New Card',
+        editions: ['test'],
+        notes: 'New notes',
+        imageUrl: 'new.jpg'
+      };
+
+      const addedCard = await cardService.addCard(newCard);
+      expect(addedCard).toMatchObject(newCard);
+      expect(addedCard.id).toBeDefined();
+    });
+
+    it('should throw error for invalid card data', async () => {
+      const invalidCard = {
+        text: '', // Invalid empty text
+        editions: ['test']
+      };
+
+      await expect(cardService.addCard(invalidCard)).rejects.toThrow('Invalid card data');
+    });
+  });
+
+  describe('updateCard', () => {
+    it('should update an existing card', async () => {
+      const updates = {
+        text: 'Updated Card',
+        editions: ['updated']
+      };
+
+      const updatedCard = await cardService.updateCard('1', updates);
+      expect(updatedCard).toMatchObject({
+        id: '1',
+        ...updates
+      });
+    });
+
+    it('should throw error if card not found', async () => {
+      const updates = {
+        text: 'Updated Card',
+        editions: ['updated']
+      };
+
+      await expect(cardService.updateCard('999', updates)).rejects.toThrow('Card not found');
+    });
+  });
+
+  describe('deleteCard', () => {
+    it('should delete an existing card', async () => {
+      const result = await cardService.deleteCard('1');
+      expect(result).toBe(true);
+    });
+
+    it('should throw error if card not found', async () => {
+      await expect(cardService.deleteCard('999')).rejects.toThrow('Card not found');
+    });
+  });
+
+  describe('validateCard', () => {
+    it('should validate card data correctly', () => {
+      const validCard = {
+        text: 'Valid Card',
+        editions: ['test']
+      };
+      expect(cardService.validateCard(validCard)).toBe(true);
+    });
+
+    it('should reject invalid card data', () => {
+      const invalidCards = [
+        null,
+        undefined,
+        {},
+        { text: '' },
+        { text: 'Test', editions: [] },
+        { text: 'Test', editions: [''] },
+        { text: 'Test', editions: ['a'.repeat(31)] },
+        { text: 'Test', editions: ['test!'] },
+        { text: 'Test', editions: ['test'], notes: 123 },
+        { text: 'Test', editions: ['test'], imageUrl: 123 }
+      ];
+
+      invalidCards.forEach(card => {
+        expect(cardService.validateCard(card)).toBe(false);
+      });
+    });
   });
 }); 
