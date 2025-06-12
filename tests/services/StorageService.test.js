@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { StorageService } from '../../src/services/StorageService.js';
 import { Card } from '../../src/models/Card.js';
 

@@ -1,6 +1,14 @@
+import { jest } from '@jest/globals';
 import { CardService } from '../../src/services/CardService.js';
-import { Card } from '../../src/models/Card.js';
 import { StorageService } from '../../src/services/StorageService.js';
+
+// Mock StorageService
+jest.mock('../../src/services/StorageService.js', () => ({
+  StorageService: jest.fn().mockImplementation(() => ({
+    getCards: jest.fn().mockResolvedValue([]),
+    saveCards: jest.fn().mockResolvedValue(true)
+  }))
+}));
 
 describe('CardService', () => {
   let cardService;
@@ -10,22 +18,10 @@ describe('CardService', () => {
     // Reset mocks
     jest.clearAllMocks();
     
-    // Create test cards
+    // Setup mock data
     mockCards = [
-      {
-        id: '1',
-        text: 'Test Card 1',
-        editions: ['test'],
-        notes: 'Test notes 1',
-        imageUrl: 'test1.jpg'
-      },
-      {
-        id: '2',
-        text: 'Test Card 2',
-        editions: ['test'],
-        notes: 'Test notes 2',
-        imageUrl: 'test2.jpg'
-      }
+      { id: '1', text: 'Test card 1' },
+      { id: '2', text: 'Test card 2' }
     ];
 
     // Setup StorageService mock

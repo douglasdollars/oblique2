@@ -1,9 +1,12 @@
-describe('HTML and CSS Setup', () => {
-  let document;
+import { jest } from '@jest/globals';
+import fs from 'fs';
 
+let document;
+
+describe('HTML and CSS Setup', () => {
   beforeEach(() => {
     document = new DOMParser().parseFromString(
-      require('fs').readFileSync('./src/index.html', 'utf8'),
+      fs.readFileSync('./src/index.html', 'utf8'),
       'text/html'
     );
   });

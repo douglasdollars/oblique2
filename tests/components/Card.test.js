@@ -1,5 +1,6 @@
 import { JSDOM } from 'jsdom';
-import { Card } from '../../src/components/Card';
+import { Card } from '../../src/components/Card.js';
+import { jest } from '@jest/globals';
 
 describe('Card Component', () => {
   let dom;
@@ -7,10 +8,11 @@ describe('Card Component', () => {
   let main;
 
   beforeEach(() => {
-    dom = new JSDOM('<!DOCTYPE html><html><body><main></main></body></html>');
+    dom = new JSDOM('<!DOCTYPE html><html><body><main></main></body></html>', { url: 'http://localhost/' });
+    global.window = dom.window;
+    global.document = dom.window.document;
     document = dom.window.document;
     main = document.querySelector('main');
-    global.document = document;
   });
 
   afterEach(() => {

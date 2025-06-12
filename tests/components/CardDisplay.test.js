@@ -1,7 +1,8 @@
-const { JSDOM } = require('jsdom');
-const CardDisplay = require('../../src/components/CardDisplay');
-const CardService = require('../../src/services/CardService');
-const CardStack = require('../../src/components/CardStack');
+import { JSDOM } from 'jsdom';
+import { CardDisplay } from '../../src/components/CardDisplay.js';
+import { CardService } from '../../src/services/CardService.js';
+import { CardStack } from '../../src/components/CardStack.js';
+import { jest } from '@jest/globals';
 
 // Mock dependencies
 jest.mock('../../src/services/CardService');
@@ -15,9 +16,9 @@ describe('CardDisplay', () => {
   let mockCardStack;
 
   beforeEach(() => {
-    dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>');
-    global.document = dom.window.document;
+    dom = new JSDOM('<!DOCTYPE html><html><body><main></main></body></html>', { url: 'http://localhost/' });
     global.window = dom.window;
+    global.document = dom.window.document;
     container = document.getElementById('container');
 
     // Setup CardService mock

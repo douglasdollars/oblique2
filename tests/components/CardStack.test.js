@@ -1,6 +1,7 @@
-const { JSDOM } = require('jsdom');
-const CardStack = require('../../src/components/CardStack');
-const Card = require('../../src/components/Card');
+import { JSDOM } from 'jsdom';
+import { CardStack } from '../../src/components/CardStack.js';
+import { Card } from '../../src/components/Card.js';
+import { jest } from '@jest/globals';
 
 describe('CardStack', () => {
   let dom;
@@ -8,9 +9,9 @@ describe('CardStack', () => {
   let cardStack;
 
   beforeEach(() => {
-    dom = new JSDOM('<!DOCTYPE html><html><body><div id="container"></div></body></html>');
-    global.document = dom.window.document;
+    dom = new JSDOM('<!DOCTYPE html><html><body><main></main><div id="container"></div></body></html>', { url: 'http://localhost/' });
     global.window = dom.window;
+    global.document = dom.window.document;
     container = document.getElementById('container');
   });
 
