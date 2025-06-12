@@ -6,165 +6,178 @@ import { StorageService } from './StorageService.js';
  */
 export class CardService {
   constructor() {
+    this.storageKey = 'oblique_strategies_cards';
+    this.cards = this.loadCards();
     this.storageService = new StorageService();
     this.fallbackCard = {
       id: 'fallback',
-      text: '[we\'ve created mystery]',
-      editions: ['fallback'],
-      notes: 'This card appears when there is an error or no cards are available.',
-      imageUrl: null
+      text: 'Use an old idea',
+      editions: ['Original'],
+      notes: 'Default card when no others are available',
+      imageUrl: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
   }
 
-  /**
-   * Get all cards from storage
-   * @returns {Promise<Array>} Array of card objects
-   */
-  async getCards() {
+  loadCards() {
     try {
-      const cards = await this.storageService.getCards();
-      return cards || [];
+      const storedCards = localStorage.getItem(this.storageKey);
+      return storedCards ? JSON.parse(storedCards) : [];
     } catch (error) {
-      console.error('Error getting cards:', error);
+      console.error('Error loading cards:', error);
       return [];
     }
   }
 
-  /**
-   * Get a random card from the available cards
-   * @returns {Promise<Object>} Random card object or fallback card
-   */
-  async getRandomCard() {
+  saveCards() {
     try {
-      const cards = await this.getCards();
-      
-      if (!cards || cards.length === 0) {
-        return this.fallbackCard;
-      }
-
-      const randomIndex = Math.floor(Math.random() * cards.length);
-      return cards[randomIndex];
+      localStorage.setItem(this.storageKey, JSON.stringify(this.cards));
+      return true;
     } catch (error) {
-      console.error('Error getting random card:', error);
-      return this.fallbackCard;
+      console.error('Error saving cards:', error);
+      return false;
     }
   }
 
-  /**
-   * Add a new card to storage
-   * @param {Object} card Card object to add
-   * @returns {Promise<Object>} Added card object
-   */
-  async addCard(card) {
-    try {
-      if (!this.validateCard(card)) {
-        throw new Error('Invalid card data');
-      }
+  getAllCards() {
+    return [...this.cards];
+  }
 
-      const cards = await this.getCards();
+  getCardById(id) {
+    return this.cards.find(card => card.id === id) || null;
+  }
+
+  addCard(cardData) {
+    try {
       const newCard = {
-        ...card,
-        id: Date.now().toString() // Simple ID generation
+        id: this.generateId(),
+        text: cardData.text.trim(),
+        editions: [...cardData.editions],
+        notes: cardData.notes?.trim() || '',
+        imageUrl: cardData.imageUrl?.trim() || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
-      cards.push(newCard);
-      await this.storageService.saveCards(cards);
-      return newCard;
+      this.validateCard(newCard);
+      this.cards.unshift(newCard);
+      
+      if (this.saveCards()) {
+        return newCard;
+      }
+      throw new Error('Failed to save card');
     } catch (error) {
       console.error('Error adding card:', error);
       throw error;
     }
   }
 
-  /**
-   * Update an existing card
-   * @param {string} id Card ID to update
-   * @param {Object} updates Updated card data
-   * @returns {Promise<Object>} Updated card object
-   */
-  async updateCard(id, updates) {
+  updateCard(id, cardData) {
     try {
-      if (!this.validateCard(updates)) {
-        throw new Error('Invalid card data');
-      }
-
-      const cards = await this.getCards();
-      const index = cards.findIndex(card => card.id === id);
-
+      const index = this.cards.findIndex(card => card.id === id);
       if (index === -1) {
         throw new Error('Card not found');
       }
 
-      cards[index] = { ...cards[index], ...updates };
-      await this.storageService.saveCards(cards);
-      return cards[index];
+      const updatedCard = {
+        ...this.cards[index],
+        text: cardData.text.trim(),
+        editions: [...cardData.editions],
+        notes: cardData.notes?.trim() || '',
+        imageUrl: cardData.imageUrl?.trim() || '',
+        updatedAt: new Date().toISOString()
+      };
+
+      this.validateCard(updatedCard);
+      this.cards[index] = updatedCard;
+
+      if (this.saveCards()) {
+        return updatedCard;
+      }
+      throw new Error('Failed to save updated card');
     } catch (error) {
       console.error('Error updating card:', error);
       throw error;
     }
   }
 
-  /**
-   * Delete a card
-   * @param {string} id Card ID to delete
-   * @returns {Promise<boolean>} Success status
-   */
-  async deleteCard(id) {
+  deleteCard(id) {
     try {
-      const cards = await this.getCards();
-      const filteredCards = cards.filter(card => card.id !== id);
-
-      if (filteredCards.length === cards.length) {
+      const index = this.cards.findIndex(card => card.id === id);
+      if (index === -1) {
         throw new Error('Card not found');
       }
 
-      await this.storageService.saveCards(filteredCards);
-      return true;
+      this.cards.splice(index, 1);
+      
+      if (this.saveCards()) {
+        return true;
+      }
+      throw new Error('Failed to save after deletion');
     } catch (error) {
       console.error('Error deleting card:', error);
       throw error;
     }
   }
 
-  /**
-   * Validate card data
-   * @param {Object} card Card object to validate
-   * @returns {boolean} Validation result
-   */
   validateCard(card) {
-    if (!card || typeof card !== 'object') {
-      return false;
+    if (!card.text || typeof card.text !== 'string' || card.text.trim().length === 0) {
+      throw new Error('Card text is required');
     }
 
-    // Required fields
-    if (!card.text || typeof card.text !== 'string' || card.text.trim() === '') {
-      return false;
-    }
-
-    // Editions validation
     if (!Array.isArray(card.editions) || card.editions.length === 0) {
-      return false;
+      throw new Error('At least one edition is required');
     }
 
-    // Validate each edition
-    for (const edition of card.editions) {
-      if (typeof edition !== 'string' || 
-          edition.length > 30 || 
-          !/^[a-zA-Z0-9\s]+$/.test(edition)) {
-        return false;
+    if (card.editions.some(edition => typeof edition !== 'string' || edition.trim().length === 0)) {
+      throw new Error('Invalid edition format');
+    }
+
+    if (card.editions.some(edition => edition.length > 30)) {
+      throw new Error('Edition name must be 30 characters or less');
+    }
+
+    if (card.editions.some(edition => !/^[a-zA-Z0-9\s]+$/.test(edition))) {
+      throw new Error('Edition name can only contain letters, numbers, and spaces');
+    }
+
+    if (card.imageUrl && typeof card.imageUrl === 'string') {
+      try {
+        new URL(card.imageUrl);
+      } catch {
+        throw new Error('Invalid image URL format');
       }
     }
+  }
 
-    // Optional fields validation
-    if (card.notes && typeof card.notes !== 'string') {
-      return false;
+  generateId() {
+    return `card_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  searchCards(query) {
+    const searchTerm = query.toLowerCase();
+    return this.cards.filter(card => {
+      return (
+        card.text.toLowerCase().includes(searchTerm) ||
+        card.editions.some(edition => edition.toLowerCase().includes(searchTerm)) ||
+        card.notes.toLowerCase().includes(searchTerm)
+      );
+    });
+  }
+
+  filterByEdition(edition) {
+    return this.cards.filter(card => 
+      card.editions.some(e => e.toLowerCase() === edition.toLowerCase())
+    );
+  }
+
+  getRandomCard() {
+    if (this.cards.length === 0) {
+      return this.fallbackCard;
     }
-
-    if (card.imageUrl && typeof card.imageUrl !== 'string') {
-      return false;
-    }
-
-    return true;
+    const randomIndex = Math.floor(Math.random() * this.cards.length);
+    return this.cards[randomIndex];
   }
 
   /**

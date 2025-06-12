@@ -1,0 +1,147 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-light);
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 2rem;
+  position: relative;
+}
+
+.table th.sortable:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+.sort-indicator {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.75rem;
+  height: 0.75rem;
+  opacity: 0.5;
+}
+
+.table th.sorted .sort-indicator {
+  opacity: 1;
+}
+
+.table th.sorted.asc .sort-indicator::before {
+  content: '↑';
+  color: var(--color-primary);
+}
+
+.table th.sorted.desc .sort-indicator::before {
+  content: '↓';
+  color: var(--color-primary);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(255, 215, 0, 0.05);
+}
+
+.table td button {
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: all var(--transition-normal);
+}
+
+.table td button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-black);
+}
+
+.table td button:focus {
+  outline: none;
+  box-shadow: var(--shadow-gold);
+}
+
+.table td button.delete-button {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.table td button.delete-button:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .table td button {
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .table th,
+  .table td {
+    border-color: CanvasText;
+  }
+  
+  .table td button {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+  }
+}
+
+/* Print styles */
+@media print {
+  .table-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .table th {
+    background-color: #f5f5f5;
+    color: #000;
+  }
+
+  .table td button {
+    display: none;
+  }
+} 
