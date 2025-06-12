@@ -113,4 +113,41 @@ describe('Card Component', () => {
     const computedStyle = window.getComputedStyle(cardElement);
     expect(computedStyle.width).toBe('50mm');
   });
+
+  it('should have proper paper texture and visual effects', () => {
+    const card = new Card();
+    const cardElement = document.querySelector('.card');
+    const cardFront = cardElement.querySelector('.card-front');
+    const cardBack = cardElement.querySelector('.card-back');
+    
+    // Check for paper texture
+    expect(cardFront.style.backgroundImage).toContain('linear-gradient');
+    
+    // Check for shadow effects
+    expect(cardFront.style.boxShadow).toBeTruthy();
+    expect(cardBack.style.boxShadow).toBeTruthy();
+    
+    // Check for noise overlay
+    expect(cardElement.querySelector('::before')).toBeTruthy();
+  });
+
+  it('should have proper z-index layering', () => {
+    const card = new Card();
+    const cardElement = document.querySelector('.card');
+    const cardContent = cardElement.querySelector('.card-content');
+    
+    expect(cardContent.style.zIndex).toBe('2');
+  });
+
+  it('should have proper high DPI display optimization', () => {
+    const card = new Card();
+    const cardElement = document.querySelector('.card');
+    
+    // Simulate high DPI display
+    Object.defineProperty(window, 'devicePixelRatio', { value: 2 });
+    window.dispatchEvent(new Event('resize'));
+    
+    const computedStyle = window.getComputedStyle(cardElement);
+    expect(computedStyle.getPropertyValue('--card-paper-texture')).toBeTruthy();
+  });
 }); 

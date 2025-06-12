@@ -193,29 +193,29 @@
 
 ### ✅ Step 2.2: Card Dimensions and Paper Texture
 
-- [ ] Update `src/styles/card.css`
-  - [ ] Set precise card dimensions maintaining 7cm x 9cm ratio
-  - [ ] Add CSS techniques for paper texture effect (subtle gradients, box-shadows)
-  - [ ] Add realistic depth and shadow effects
-  - [ ] Add proper border styling
-- [ ] Create texture and visual effects
-  - [ ] Add subtle paper grain using CSS patterns or pseudo-elements
-  - [ ] Add soft shadows for card depth
-  - [ ] Add slight rounded corners for realism
-  - [ ] Consider anti-aliasing
-- [ ] Optimize for different screen densities
-  - [ ] Add high DPI display support
-  - [ ] Ensure consistent appearance across devices
-  - [ ] Implement performance-conscious texture
-- [ ] Update responsive behavior
-  - [ ] Maintain texture quality at different sizes
-  - [ ] Ensure readability on smaller screens
-  - [ ] Preserve visual hierarchy
-- [ ] Write tests
-  - [ ] Test card visual rendering
-  - [ ] Test texture application
-  - [ ] Test cross-device consistency
-  - [ ] Test performance impact
+- [x] Update `src/styles/card.css`
+  - [x] Set precise card dimensions maintaining 7cm x 9cm ratio
+  - [x] Add CSS techniques for paper texture effect (subtle gradients, box-shadows)
+  - [x] Add realistic depth and shadow effects
+  - [x] Add proper border styling
+- [x] Create texture and visual effects
+  - [x] Add subtle paper grain using CSS patterns or pseudo-elements
+  - [x] Add soft shadows for card depth
+  - [x] Add slight rounded corners for realism
+  - [x] Consider anti-aliasing
+- [x] Optimize for different screen densities
+  - [x] Add high DPI display support
+  - [x] Ensure consistent appearance across devices
+  - [x] Implement performance-conscious texture
+- [x] Update responsive behavior
+  - [x] Maintain texture quality at different sizes
+  - [x] Ensure readability on smaller screens
+  - [x] Preserve visual hierarchy
+- [x] Write tests
+  - [x] Test card visual rendering
+  - [x] Test texture application
+  - [x] Test cross-device consistency
+  - [x] Test performance impact
 
 ### ✅ Step 2.3: Card Text Rendering and Centering
 

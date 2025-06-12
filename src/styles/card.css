@@ -9,12 +9,32 @@
   --card-back-color: #000000;
   --card-text-color: #000000;
   --card-back-text-color: #ffffff;
+  --card-paper-texture: 
+    linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.02) 75%);
+  --card-paper-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 
   width: var(--card-width);
   height: var(--card-height);
   perspective: 1000px;
   margin: 2rem auto;
   cursor: pointer;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card-paper-noise);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card-inner {
@@ -24,6 +44,7 @@
   text-align: center;
   transition: transform 0.3s;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .card-inner.is-flipped {
@@ -41,25 +62,59 @@
   align-items: center;
   justify-content: center;
   padding: var(--card-padding);
+  overflow: hidden;
 }
 
 .card-front {
   background-color: var(--card-paper-color);
   color: var(--card-text-color);
-  /* Paper texture effect */
-  background-image: 
-    linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.02) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.02) 75%);
+  background-image: var(--card-paper-texture);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.1) inset;
+}
+
+.card-front::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  pointer-events: none;
 }
 
 .card-back {
   background-color: var(--card-back-color);
   color: var(--card-back-text-color);
   transform: rotateY(180deg);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(255, 255, 255, 0.1) inset;
+}
+
+.card-back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  pointer-events: none;
 }
 
 .card-content {
@@ -70,6 +125,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--card-padding);
+  position: relative;
+  z-index: 2;
 }
 
 .card-text {
@@ -77,6 +134,7 @@
   line-height: 1.4;
   margin: 0;
   max-width: 90%;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .card-editions {
@@ -92,6 +150,8 @@
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.875rem;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .card-notes {
@@ -99,17 +159,36 @@
   line-height: 1.4;
   margin: 1rem 0;
   max-width: 90%;
+  opacity: 0.9;
 }
 
 .card-image {
   max-width: 80%;
   margin-top: 1rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .card-image img {
   max-width: 100%;
   height: auto;
-  border-radius: 0.25rem;
+  display: block;
+}
+
+/* High DPI display optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .card {
+    --card-paper-texture: 
+      linear-gradient(45deg, rgba(0,0,0,0.015) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(0,0,0,0.015) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.015) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.015) 75%);
+  }
+  
+  .card::before {
+    opacity: 0.03;
+  }
 }
 
 /* Responsive scaling */
