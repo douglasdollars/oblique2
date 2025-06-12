@@ -30,28 +30,28 @@
 
 ### ✅ Step 1.2: Basic HTML Structure and CSS Reset
 
-- [ ] Create `src/index.html`
-  - [ ] Add semantic HTML5 structure
-  - [ ] Add proper meta tags for responsive design
-  - [ ] Add basic accessibility attributes
-  - [ ] Add links to CSS and JS files
-- [ ] Create `src/styles/reset.css`
-  - [ ] Implement modern CSS reset/normalize
-  - [ ] Set box-sizing border-box for all elements
-  - [ ] Add basic typography reset
-- [ ] Create `src/styles/main.css`
-  - [ ] Add CSS Custom Properties for design system (colors, spacing, fonts)
-  - [ ] Create basic grid layout structure for header, main, and footer
-  - [ ] Implement mobile-first responsive approach
-- [ ] Set up basic page layout structure
-  - [ ] Add header for navigation
-  - [ ] Add main content area
-  - [ ] Add footer (initially hidden)
-- [ ] Write tests
-  - [ ] Verify HTML validates correctly
-  - [ ] Test CSS loads without errors
-  - [ ] Test basic responsive layout works
-- [ ] Ensure all styles follow black/dark grey background with golden accents color scheme
+- [x] Create `src/index.html`
+  - [x] Add semantic HTML5 structure
+  - [x] Add proper meta tags for responsive design
+  - [x] Add basic accessibility attributes
+  - [x] Add links to CSS and JS files
+- [x] Create `src/styles/reset.css`
+  - [x] Implement modern CSS reset/normalize
+  - [x] Set box-sizing border-box for all elements
+  - [x] Add basic typography reset
+- [x] Create `src/styles/main.css`
+  - [x] Add CSS Custom Properties for design system (colors, spacing, fonts)
+  - [x] Create basic grid layout structure for header, main, and footer
+  - [x] Implement mobile-first responsive approach
+- [x] Set up basic page layout structure
+  - [x] Add header for navigation
+  - [x] Add main content area
+  - [x] Add footer (initially hidden)
+- [x] Write tests
+  - [x] Verify HTML validates correctly
+  - [x] Test CSS loads without errors
+  - [x] Test basic responsive layout works
+- [x] Ensure all styles follow black/dark grey background with golden accents color scheme
 
 ### ✅ Step 1.3: Core Data Model and Local Storage
 
