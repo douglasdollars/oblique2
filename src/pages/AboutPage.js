@@ -32,7 +32,7 @@ export class AboutPage {
         </section>
 
         <section class="about-section">
-          <h2>The Creators</h2>
+          <h2>The Creators of Oblique Strategies</h2>
           <div class="creators-grid">
             <div class="creator">
               <h3>Brian Eno</h3>
@@ -50,6 +50,15 @@ export class AboutPage {
                 for his experimental approach to art and his interest in the intersection of visual 
                 art and music. Schmidt collaborated with Eno on various projects and shared his 
                 philosophy of using constraints and chance operations in creative work.
+              </p>
+            </div>
+          </div>
+          <h2>The Creator of This Website</h2>
+          <div class="creators-grid">
+            <div class="creator">
+              <h3>Douglas Dollars</h3>
+              <p>
+                A pretty nice guy!
               </p>
             </div>
           </div>

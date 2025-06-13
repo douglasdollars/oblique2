@@ -90,7 +90,7 @@ A digital implementation of Brian Eno and Peter Schmidt's legendary creative too
 ```bash
 # Clone the repository
 git clone https://github.com/douglasdollars/oblique2.git
-cd oblique-strategies
+cd oblique2
 
 # Install dependencies
 npm install
