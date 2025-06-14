@@ -196,6 +196,15 @@ The application includes a service worker that:
 - Clear npm cache: `npm cache clean --force`
 - Delete node_modules and reinstall
 
+**Dependency Conflicts:**
+
+- If you encounter peer dependency conflicts (especially with ts-jest and babel-jest), ensure compatible versions:
+  - ts-jest@29.x requires babel-jest@^29.0.0
+  - If using babel-jest@30.x, you'll need to either:
+    1. Downgrade babel-jest to ^29.7.0
+    2. Upgrade ts-jest to a version that supports babel-jest@30.x
+  - To resolve: `rm -rf node_modules package-lock.json && npm install`
+
 **Routing Issues:**
 
 - Ensure server supports SPA routing
